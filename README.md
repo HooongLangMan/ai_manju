@@ -10,3 +10,13 @@ Local development workspace for AI manga production.
 - `storage/`: local projects, assets, renders, and models
 - `docs/`: project notes and specs
 - `scripts/`: automation scripts
+
+## Local ComfyUI Candidate
+
+With ComfyUI running at `http://127.0.0.1:8188`, generate and import a local image candidate:
+
+```bash
+uv run python scripts/comfy_generate.py --project demo-001 --shot shot-001
+```
+
+Generated binaries stay local under `storage/projects/<project>/candidates/`; review a candidate before promoting it to `stills/`.
