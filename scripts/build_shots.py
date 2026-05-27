@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from argparse import ArgumentParser
 from pathlib import Path
+import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.local_video.project_paths import ProjectPaths
 from scripts.local_video.shots import Shot, dump_shots, load_shots
 

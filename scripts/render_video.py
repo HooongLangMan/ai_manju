@@ -3,7 +3,9 @@ from argparse import ArgumentParser
 import json
 from pathlib import Path
 import subprocess
+import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.local_video.project_paths import ProjectPaths
 from scripts.local_video.rendering import (
     build_clip_command,

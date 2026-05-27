@@ -4,8 +4,16 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts.local_video.audio_builder import build_project_audio
+from scripts.build_audio import build_project_audio
+from scripts.build_shots import normalize_project_shots
 from scripts.local_video.project_paths import ProjectPaths
+from scripts.render_video import render_project_video
+
+
+def run_pipeline(paths: ProjectPaths) -> Path:
+    normalize_project_shots(paths)
+    build_project_audio(paths)
+    return render_project_video(paths)
 
 
 def parse_args() -> ArgumentParser:
@@ -21,8 +29,8 @@ def parse_args() -> ArgumentParser:
 def main() -> None:
     args = parse_args().parse_args()
     paths = ProjectPaths(repo_root=Path(args.repo_root), project_name=args.project)
-    durations = build_project_audio(paths)
-    print(f"Generated audio for {len(durations)} shots")
+    output_path = run_pipeline(paths)
+    print(f"Finished demo render: {output_path}")
 
 
 if __name__ == "__main__":
