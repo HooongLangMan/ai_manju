@@ -25,12 +25,20 @@ class ProjectPaths:
         return self.project_dir / "style_guide.md"
 
     @property
+    def asset_manifest_file(self) -> Path:
+        return self.project_dir / "asset_manifest.json"
+
+    @property
     def shots_file(self) -> Path:
         return self.project_dir / "shots.json"
 
     @property
     def stills_dir(self) -> Path:
         return self.project_dir / "stills"
+
+    @property
+    def candidates_dir(self) -> Path:
+        return self.project_dir / "candidates"
 
     @property
     def audio_dir(self) -> Path:
@@ -61,5 +69,11 @@ class ProjectPaths:
         return self.render_dir / self.render_filename
 
     def ensure_generated_dirs(self) -> None:
-        for path in (self.audio_dir, self.build_dir, self.prompts_dir, self.render_dir):
+        for path in (
+            self.audio_dir,
+            self.build_dir,
+            self.prompts_dir,
+            self.candidates_dir,
+            self.render_dir,
+        ):
             path.mkdir(parents=True, exist_ok=True)

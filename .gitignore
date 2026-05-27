@@ -5,4 +5,7 @@ __pycache__/
 *.pyc
 storage/projects/*/audio/
 storage/projects/*/build/
+storage/projects/*/candidates/**
+!storage/projects/*/candidates/
+!storage/projects/*/candidates/.gitkeep
 storage/renders/*.mp4
