@@ -1,0 +1,38 @@
+[
+  {
+    "id": "shot-001",
+    "image": "stills/shot-001.png",
+    "duration_sec": 6,
+    "camera_motion": "slow_push_in",
+    "voice": "female_narrator",
+    "dialogue": "我不是应该死在手术台上吗？这里，怎么会是冷宫？",
+    "subtitle": "我不是应该死在手术台上吗？这里，怎么会是冷宫？"
+  },
+  {
+    "id": "shot-002",
+    "image": "stills/shot-002.png",
+    "duration_sec": 5,
+    "camera_motion": "static",
+    "voice": "system_voice",
+    "dialogue": "系统提示：三日内接近摄政王，否则立即抹杀。",
+    "subtitle": "系统提示：三日内接近摄政王，否则立即抹杀。"
+  },
+  {
+    "id": "shot-003",
+    "image": "stills/shot-003.png",
+    "duration_sec": 6,
+    "camera_motion": "slow_pan_left",
+    "voice": "female_narrator",
+    "dialogue": "苏晚攥紧衣袖，抬眼便撞进那人冷得像雪的目光里。",
+    "subtitle": "苏晚攥紧衣袖，抬眼便撞进那人冷得像雪的目光里。"
+  },
+  {
+    "id": "shot-004",
+    "image": "stills/shot-004.png",
+    "duration_sec": 5,
+    "camera_motion": "slow_pan_right",
+    "voice": "male_regent",
+    "dialogue": "你，不是她。",
+    "subtitle": "你，不是她。"
+  }
+]
