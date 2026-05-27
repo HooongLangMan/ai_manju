@@ -1,0 +1,7 @@
+.codegraph/
+__pycache__/
+.pytest_cache/
+*.pyc
+storage/projects/*/audio/
+storage/projects/*/build/
+storage/renders/*.mp4
