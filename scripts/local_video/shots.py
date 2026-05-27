@@ -21,6 +21,8 @@ class Shot:
     voice: str
     dialogue: str
     subtitle: str
+    visual_prompt: str = ""
+    negative_prompt: str = ""
 
     @classmethod
     def from_dict(cls, payload: dict) -> "Shot":
@@ -53,6 +55,8 @@ class Shot:
             voice=str(payload["voice"]),
             dialogue=str(payload["dialogue"]),
             subtitle=str(payload["subtitle"]),
+            visual_prompt=str(payload.get("visual_prompt", "")),
+            negative_prompt=str(payload.get("negative_prompt", "")),
         )
 
 

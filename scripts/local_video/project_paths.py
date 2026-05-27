@@ -17,6 +17,14 @@ class ProjectPaths:
         return self.project_dir / "story.md"
 
     @property
+    def characters_file(self) -> Path:
+        return self.project_dir / "characters.json"
+
+    @property
+    def style_guide_file(self) -> Path:
+        return self.project_dir / "style_guide.md"
+
+    @property
     def shots_file(self) -> Path:
         return self.project_dir / "shots.json"
 
@@ -31,6 +39,10 @@ class ProjectPaths:
     @property
     def build_dir(self) -> Path:
         return self.project_dir / "build"
+
+    @property
+    def prompts_dir(self) -> Path:
+        return self.build_dir / "prompts"
 
     @property
     def durations_file(self) -> Path:
@@ -49,5 +61,5 @@ class ProjectPaths:
         return self.render_dir / self.render_filename
 
     def ensure_generated_dirs(self) -> None:
-        for path in (self.audio_dir, self.build_dir, self.render_dir):
+        for path in (self.audio_dir, self.build_dir, self.prompts_dir, self.render_dir):
             path.mkdir(parents=True, exist_ok=True)

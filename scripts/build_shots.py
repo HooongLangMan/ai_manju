@@ -33,6 +33,8 @@ def normalize_project_shots(paths: ProjectPaths) -> int:
                 voice=shot.voice,
                 dialogue=shot.dialogue.strip(),
                 subtitle=shot.subtitle.strip(),
+                visual_prompt=shot.visual_prompt.strip(),
+                negative_prompt=shot.negative_prompt.strip(),
             )
         )
 

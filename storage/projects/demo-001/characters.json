@@ -1,0 +1,23 @@
+[
+  {
+    "id": "su_wan",
+    "name": "苏晚",
+    "role": "穿越女主，现代外科医生魂穿冷宫弃妃",
+    "prompt": "young Chinese woman, early twenties, delicate oval face, clear anxious eyes, long black hair half-up with a simple silver hairpin, pale blue and white ruined palace hanfu, slightly loose sleeves, elegant but tired, no heavy makeup",
+    "continuity": "Keep the same oval face, silver hairpin, pale blue-white hanfu, restrained expression, and modern alertness in her eyes across every shot."
+  },
+  {
+    "id": "regent_prince",
+    "name": "萧景珩",
+    "role": "摄政王，冷峻权臣，怀疑女主身份",
+    "prompt": "tall Chinese man, late twenties, sharp handsome face, cold narrow eyes, black hair tied high with a jade crown, dark ink-black embroidered robe with subtle silver dragon pattern, dignified posture, powerful and distant",
+    "continuity": "Keep the same jade crown, black-silver robe, sharp eyes, pale stern face, and controlled royal posture in every appearance."
+  },
+  {
+    "id": "system_panel",
+    "name": "系统面板",
+    "role": "穿越系统 UI 视觉母题",
+    "prompt": "floating translucent golden system interface, thin luminous rectangular frame, ancient talisman patterns mixed with minimal sci-fi UI lines, soft gold particles, no readable text",
+    "continuity": "Use the same translucent gold color, talisman border, and clean floating UI geometry whenever the system appears."
+  }
+]
