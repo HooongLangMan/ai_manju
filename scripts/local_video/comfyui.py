@@ -79,6 +79,12 @@ def _variant_instruction(variant_name: str) -> str:
             "show the moonlit window, bed edge, curtains, lamp, and more palace room context, "
             "clear architectural framing, plain blank surfaces, open negative space, and visually quiet corners."
         )
+    if variant_name == "medium":
+        return (
+            "Use a balanced medium shot with a single subject, waist-up framing, clear hands or sleeve gesture, "
+            "a readable bed edge or nearby prop, moderate background detail, stable storytelling composition, "
+            "and enough room context to feel like a scene instead of a poster."
+        )
     return (
         "Use a tight close-up portrait with a single subject, chest-up framing, stronger startled facial emotion, "
         "larger subject scale, simple cropped background, plain curtain or window glow only, and visually quiet corners."

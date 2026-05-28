@@ -118,13 +118,17 @@ def test_project_prompt_to_flux_text_changes_composition_by_variant() -> None:
     """.strip()
 
     portrait_text = project_prompt_to_flux_text(prompt_markdown, variant_name="portrait")
+    medium_text = project_prompt_to_flux_text(prompt_markdown, variant_name="medium")
     environment_text = project_prompt_to_flux_text(
         prompt_markdown,
         variant_name="environment",
     )
 
     assert "tight close-up" in portrait_text.lower()
+    assert "balanced medium shot" in medium_text.lower()
     assert "wider medium shot" in environment_text.lower()
+    assert portrait_text != medium_text
+    assert medium_text != environment_text
     assert portrait_text != environment_text
 
 

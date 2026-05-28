@@ -5,6 +5,7 @@ import pytest
 from scripts.local_video.assets import import_candidate
 from scripts.local_video.comfy_batch import (
     DEFAULT_VARIANT_SEED_STEP,
+    DEFAULT_VARIANT_SEQUENCE,
     ShotBatchSummary,
     generate_candidates_for_project,
     generate_candidates_for_shot,
@@ -54,7 +55,48 @@ def test_generate_candidates_for_shot_retries_until_variants_are_filled(tmp_path
     assert [shot_id for shot_id, _, _ in calls] == ["shot-001", "shot-001", "shot-001"]
     assert calls[-2][1] == 527003
     assert calls[-1][1] == 527002 + DEFAULT_VARIANT_SEED_STEP + 1
-    assert [variant_name for _, _, variant_name in calls[-2:]] == ["portrait", "environment"]
+    assert [variant_name for _, _, variant_name in calls[-2:]] == ["portrait", "medium"]
+
+
+def test_generate_candidates_for_shot_uses_three_distinct_default_variants(tmp_path: Path) -> None:
+    paths = ProjectPaths(repo_root=tmp_path, project_name="demo-001")
+    paths.prompts_dir.mkdir(parents=True)
+    (paths.prompts_dir / "shot-001.md").write_text(
+        "## Global Style\n\nvertical manhua",
+        encoding="utf-8",
+    )
+
+    calls: list[tuple[int, str]] = []
+
+    def fake_generate_one(**kwargs) -> Path:
+        calls.append((kwargs["seed"], kwargs["variant_name"]))
+        output = tmp_path / f"{len(calls)}.png"
+        output.write_bytes(b"image")
+        return import_candidate(
+            paths=kwargs["paths"],
+            shot_id=kwargs["shot_id"],
+            source_image=output,
+            source="comfyui",
+            notes=f"seed {kwargs['seed']}",
+        )
+
+    summary = generate_candidates_for_shot(
+        paths=paths,
+        shot_id="shot-001",
+        client=object(),
+        variants=3,
+        max_attempts_per_image=20,
+        generate_one=fake_generate_one,
+    )
+
+    assert len(summary.created_paths) == 3
+    assert DEFAULT_VARIANT_SEQUENCE == ["portrait", "medium", "environment"]
+    assert [variant_name for _, variant_name in calls] == DEFAULT_VARIANT_SEQUENCE
+    assert [seed for seed, _ in calls] == [
+        527002,
+        527002 + DEFAULT_VARIANT_SEED_STEP,
+        527002 + DEFAULT_VARIANT_SEED_STEP * 2,
+    ]
 
 
 def test_generate_candidates_for_project_waits_for_current_shot_before_next(tmp_path: Path) -> None:

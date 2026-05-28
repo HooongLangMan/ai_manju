@@ -10,6 +10,11 @@
         "path": "candidates/shot-001/comfyui-002.png",
         "source": "comfyui",
         "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 527099, 576x1024, 8 steps"
+      },
+      {
+        "path": "candidates/shot-001/comfyui-003.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 527196, 576x1024, 8 steps"
       }
     ]
   },

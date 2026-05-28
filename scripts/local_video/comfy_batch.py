@@ -28,7 +28,7 @@ class BatchRunSummary:
     replace_source: str | None
 
 
-DEFAULT_VARIANT_SEQUENCE = ["portrait", "environment"]
+DEFAULT_VARIANT_SEQUENCE = ["portrait", "medium", "environment"]
 DEFAULT_VARIANT_SEED_STEP = 97
 
 
