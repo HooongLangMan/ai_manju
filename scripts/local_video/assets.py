@@ -68,6 +68,33 @@ def import_candidate(
     return output_path
 
 
+def remove_candidates_by_source(
+    paths: ProjectPaths,
+    shot_id: str,
+    source: str,
+) -> list[Path]:
+    manifest = load_asset_manifest(paths)
+    shot_entry = manifest.get(shot_id)
+    if not shot_entry:
+        return []
+
+    removed: list[Path] = []
+    remaining: list[dict] = []
+    for candidate in shot_entry.get("candidates", []):
+        if candidate.get("source") != source:
+            remaining.append(candidate)
+            continue
+        candidate_path = normalize_candidate_path(paths, Path(candidate["path"]))
+        if candidate_path.exists():
+            candidate_path.unlink()
+        removed.append(candidate_path)
+
+    shot_entry["candidates"] = remaining
+    manifest[shot_id] = shot_entry
+    save_asset_manifest(paths, manifest)
+    return removed
+
+
 def normalize_candidate_path(paths: ProjectPaths, candidate_path: Path) -> Path:
     if candidate_path.is_absolute():
         return candidate_path

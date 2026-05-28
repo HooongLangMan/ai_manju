@@ -6,6 +6,7 @@ import pytest
 from scripts.local_video.assets import (
     import_candidate,
     load_asset_manifest,
+    remove_candidates_by_source,
     select_candidate,
 )
 from scripts.local_video.project_paths import ProjectPaths
@@ -92,3 +93,40 @@ def test_select_candidate_rejects_candidate_from_another_shot(tmp_path: Path) ->
 
     with pytest.raises(ValueError, match="does not belong to shot-001"):
         select_candidate(paths, "shot-001", imported, status="accepted", notes="")
+
+
+def test_remove_candidates_by_source_only_removes_matching_source(tmp_path: Path) -> None:
+    paths = ProjectPaths(repo_root=tmp_path, project_name="demo-001")
+    comfy_source = tmp_path / "comfy.png"
+    local_source = tmp_path / "local.png"
+    comfy_source.write_bytes(b"comfy")
+    local_source.write_bytes(b"local")
+
+    comfy_imported = import_candidate(
+        paths=paths,
+        shot_id="shot-001",
+        source_image=comfy_source,
+        source="comfyui",
+        notes="remove me",
+    )
+    local_imported = import_candidate(
+        paths=paths,
+        shot_id="shot-001",
+        source_image=local_source,
+        source="local",
+        notes="keep me",
+    )
+
+    removed = remove_candidates_by_source(paths, "shot-001", "comfyui")
+
+    assert removed == [comfy_imported]
+    assert not comfy_imported.exists()
+    assert local_imported.exists()
+    manifest = json.loads(paths.asset_manifest_file.read_text(encoding="utf-8"))
+    assert manifest["shot-001"]["candidates"] == [
+        {
+            "path": "candidates/shot-001/local-001.png",
+            "source": "local",
+            "notes": "keep me",
+        }
+    ]

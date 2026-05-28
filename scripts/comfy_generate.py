@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts.local_video.assets import import_candidate
-from scripts.local_video.comfyui import (
-    ComfyUIClient,
-    build_flux_schnell_prompt,
-    project_prompt_to_flux_text,
+from scripts.local_video.comfy_batch import (
+    BatchRunSummary,
+    ShotBatchSummary,
+    generate_candidates_for_project,
+    generate_candidates_for_shot,
 )
+from scripts.local_video.comfyui import ComfyUIClient
 from scripts.local_video.project_paths import ProjectPaths
 
 
@@ -23,36 +24,27 @@ def generate_project_candidate(
     seed: int = 527002,
     steps: int = 4,
 ) -> Path:
-    prompt_path = paths.prompts_dir / f"{shot_id}.md"
-    if not prompt_path.exists():
-        raise FileNotFoundError(f"Missing prompt file: {prompt_path}")
-
-    prompt_text = project_prompt_to_flux_text(prompt_path.read_text(encoding="utf-8"))
-    workflow = build_flux_schnell_prompt(
-        text=prompt_text,
+    summary = generate_candidates_for_shot(
+        paths=paths,
+        shot_id=shot_id,
+        client=client,
+        variants=1,
         checkpoint_name=checkpoint_name,
         width=width,
         height=height,
         seed=seed,
         steps=steps,
-        filename_prefix=f"ai_manga_{paths.project_name}_{shot_id}_flux_schnell",
     )
-    prompt_id = client.queue_prompt(workflow)
-    outputs = client.wait_for_output_images(prompt_id)
-    output_image = client.output_image_path(outputs[0])
-    return import_candidate(
-        paths=paths,
-        shot_id=shot_id,
-        source_image=output_image,
-        source="comfyui",
-        notes=f"ComfyUI {checkpoint_name}, seed {seed}, {width}x{height}, {steps} steps",
-    )
+    return summary.created_paths[0]
 
 
 def parse_args() -> ArgumentParser:
     parser = ArgumentParser()
     parser.add_argument("--project", default="demo-001")
-    parser.add_argument("--shot", required=True)
+    parser.add_argument("--shot")
+    parser.add_argument("--variants", type=int, default=2)
+    parser.add_argument("--replace-source", choices=["comfyui"])
+    parser.add_argument("--max-attempts-per-image", type=int, default=20)
     parser.add_argument("--base-url", default="http://127.0.0.1:8188")
     parser.add_argument(
         "--output-dir",
@@ -70,24 +62,60 @@ def parse_args() -> ArgumentParser:
     return parser
 
 
-def main() -> None:
-    args = parse_args().parse_args()
+def run_generation(args: Namespace) -> BatchRunSummary | ShotBatchSummary:
     paths = ProjectPaths(repo_root=Path(args.repo_root), project_name=args.project)
     client = ComfyUIClient(
         base_url=args.base_url,
         output_dir=Path(args.output_dir),
     )
-    output_path = generate_project_candidate(
+    if args.shot:
+        return generate_candidates_for_shot(
+            paths=paths,
+            shot_id=args.shot,
+            client=client,
+            variants=args.variants,
+            replace_source=args.replace_source,
+            checkpoint_name=args.checkpoint,
+            width=args.width,
+            height=args.height,
+            seed=args.seed,
+            steps=args.steps,
+            max_attempts_per_image=args.max_attempts_per_image,
+        )
+    return generate_candidates_for_project(
         paths=paths,
-        shot_id=args.shot,
         client=client,
+        variants=args.variants,
+        replace_source=args.replace_source,
         checkpoint_name=args.checkpoint,
         width=args.width,
         height=args.height,
         seed=args.seed,
         steps=args.steps,
+        max_attempts_per_image=args.max_attempts_per_image,
     )
-    print(f"Imported ComfyUI candidate: {output_path}")
+
+
+def _format_summary(summary: BatchRunSummary | ShotBatchSummary, project: str) -> str:
+    if isinstance(summary, ShotBatchSummary):
+        return (
+            f"Project {project}: generated {len(summary.created_paths)} image(s) "
+            f"for {summary.shot_id} with {summary.retries_used} retrie(s)"
+        )
+
+    images_created = sum(len(item.created_paths) for item in summary.shot_summaries)
+    retries_used = sum(item.retries_used for item in summary.shot_summaries)
+    return (
+        f"Project {project}: processed {len(summary.shot_summaries)} shot(s), "
+        f"generated {images_created} image(s), retries used {retries_used}, "
+        f"replace_source={summary.replace_source or 'append'}"
+    )
+
+
+def main() -> None:
+    args = parse_args().parse_args()
+    summary = run_generation(args)
+    print(_format_summary(summary, args.project))
 
 
 if __name__ == "__main__":

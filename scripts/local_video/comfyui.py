@@ -12,6 +12,18 @@ class ComfyUIOutputImage:
     type: str
 
 
+class ComfyUIError(RuntimeError):
+    pass
+
+
+class ComfyUIStructuralError(ComfyUIError):
+    pass
+
+
+class ComfyUITransientError(ComfyUIError):
+    pass
+
+
 def _section(markdown: str, title: str) -> str:
     marker = f"## {title}"
     start = markdown.find(marker)
@@ -129,12 +141,12 @@ class ComfyUIClient:
             if prompt_id in history:
                 return self.extract_output_images(history[prompt_id])
             time.sleep(self.poll_interval_sec)
-        raise TimeoutError(f"ComfyUI prompt timed out: {prompt_id}")
+        raise ComfyUITransientError(f"ComfyUI prompt timed out: {prompt_id}")
 
     def extract_output_images(self, history_item: dict) -> list[ComfyUIOutputImage]:
         status = history_item.get("status", {})
         if status.get("status_str") == "error":
-            raise RuntimeError(_format_comfyui_error(status))
+            raise _classify_comfyui_error(status)
         images: list[ComfyUIOutputImage] = []
         for output in history_item.get("outputs", {}).values():
             for image in output.get("images", []):
@@ -146,7 +158,7 @@ class ComfyUIClient:
                     )
                 )
         if not images:
-            raise RuntimeError("ComfyUI finished but returned no output images")
+            raise ComfyUIStructuralError("ComfyUI finished but returned no output images")
         return images
 
     def output_image_path(self, image: ComfyUIOutputImage) -> Path:
@@ -160,3 +172,10 @@ def _format_comfyui_error(status: dict) -> str:
             message = payload.get("exception_message", "unknown error")
             return f"ComfyUI execution failed at {node_type}: {message}"
     return "ComfyUI execution failed"
+
+
+def _classify_comfyui_error(status: dict) -> ComfyUIError:
+    message = _format_comfyui_error(status)
+    if "CheckpointLoaderSimple" in message:
+        return ComfyUIStructuralError(message)
+    return ComfyUITransientError(message)

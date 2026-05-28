@@ -1,1 +1,58 @@
-{}
+{
+  "shot-001": {
+    "candidates": [
+      {
+        "path": "candidates/shot-001/comfyui-001.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 527002, 576x1024, 4 steps"
+      },
+      {
+        "path": "candidates/shot-001/comfyui-002.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 527003, 576x1024, 4 steps"
+      }
+    ]
+  },
+  "shot-002": {
+    "candidates": [
+      {
+        "path": "candidates/shot-002/comfyui-001.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 528002, 576x1024, 4 steps"
+      },
+      {
+        "path": "candidates/shot-002/comfyui-002.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 528003, 576x1024, 4 steps"
+      }
+    ]
+  },
+  "shot-003": {
+    "candidates": [
+      {
+        "path": "candidates/shot-003/comfyui-001.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 529002, 576x1024, 4 steps"
+      },
+      {
+        "path": "candidates/shot-003/comfyui-002.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 529003, 576x1024, 4 steps"
+      }
+    ]
+  },
+  "shot-004": {
+    "candidates": [
+      {
+        "path": "candidates/shot-004/comfyui-001.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 530002, 576x1024, 4 steps"
+      },
+      {
+        "path": "candidates/shot-004/comfyui-002.png",
+        "source": "comfyui",
+        "notes": "ComfyUI flux1-schnell-fp8.safetensors, seed 530003, 576x1024, 4 steps"
+      }
+    ]
+  }
+}

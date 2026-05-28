@@ -5,6 +5,8 @@ from scripts.comfy_generate import generate_project_candidate
 from scripts.local_video.comfyui import (
     ComfyUIClient,
     ComfyUIOutputImage,
+    ComfyUIStructuralError,
+    ComfyUITransientError,
     build_flux_schnell_prompt,
     project_prompt_to_flux_text,
 )
@@ -143,3 +145,53 @@ def test_comfyui_client_rejects_error_history() -> None:
         assert "bad checkpoint" in str(exc)
     else:
         raise AssertionError("Expected RuntimeError")
+
+
+def test_comfyui_client_classifies_checkpoint_errors_as_structural() -> None:
+    client = ComfyUIClient(output_dir=Path("/tmp"))
+    history = {
+        "status": {
+            "status_str": "error",
+            "messages": [
+                [
+                    "execution_error",
+                    {
+                        "node_type": "CheckpointLoaderSimple",
+                        "exception_message": "bad checkpoint",
+                    },
+                ]
+            ],
+        }
+    }
+
+    try:
+        client.extract_output_images(history)
+    except ComfyUIStructuralError as exc:
+        assert "CheckpointLoaderSimple" in str(exc)
+    else:
+        raise AssertionError("Expected ComfyUIStructuralError")
+
+
+def test_comfyui_client_classifies_sampler_errors_as_transient() -> None:
+    client = ComfyUIClient(output_dir=Path("/tmp"))
+    history = {
+        "status": {
+            "status_str": "error",
+            "messages": [
+                [
+                    "execution_error",
+                    {
+                        "node_type": "KSampler",
+                        "exception_message": "temporary sampler failure",
+                    },
+                ]
+            ],
+        }
+    }
+
+    try:
+        client.extract_output_images(history)
+    except ComfyUITransientError as exc:
+        assert "KSampler" in str(exc)
+    else:
+        raise AssertionError("Expected ComfyUITransientError")
