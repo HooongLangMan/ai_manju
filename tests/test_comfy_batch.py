@@ -4,6 +4,7 @@ import pytest
 
 from scripts.local_video.assets import import_candidate
 from scripts.local_video.comfy_batch import (
+    DEFAULT_VARIANT_SEED_STEP,
     ShotBatchSummary,
     generate_candidates_for_project,
     generate_candidates_for_shot,
@@ -21,11 +22,11 @@ def test_generate_candidates_for_shot_retries_until_variants_are_filled(tmp_path
         encoding="utf-8",
     )
 
-    calls: list[tuple[str, int]] = []
+    calls: list[tuple[str, int, str]] = []
     failures = iter([ComfyUITransientError("temporary"), None, None])
 
     def fake_generate_one(**kwargs) -> Path:
-        calls.append((kwargs["shot_id"], kwargs["seed"]))
+        calls.append((kwargs["shot_id"], kwargs["seed"], kwargs["variant_name"]))
         result = next(failures)
         if result is not None:
             raise result
@@ -50,7 +51,10 @@ def test_generate_candidates_for_shot_retries_until_variants_are_filled(tmp_path
 
     assert len(summary.created_paths) == 2
     assert summary.retries_used == 1
-    assert [shot_id for shot_id, _ in calls] == ["shot-001", "shot-001", "shot-001"]
+    assert [shot_id for shot_id, _, _ in calls] == ["shot-001", "shot-001", "shot-001"]
+    assert calls[-2][1] == 527003
+    assert calls[-1][1] == 527002 + DEFAULT_VARIANT_SEED_STEP + 1
+    assert [variant_name for _, _, variant_name in calls[-2:]] == ["portrait", "environment"]
 
 
 def test_generate_candidates_for_project_waits_for_current_shot_before_next(tmp_path: Path) -> None:

@@ -22,6 +22,7 @@ class Shot:
     dialogue: str
     subtitle: str
     visual_prompt: str = ""
+    model_visual_prompt: str = ""
     negative_prompt: str = ""
 
     @classmethod
@@ -56,6 +57,7 @@ class Shot:
             dialogue=str(payload["dialogue"]),
             subtitle=str(payload["subtitle"]),
             visual_prompt=str(payload.get("visual_prompt", "")),
+            model_visual_prompt=str(payload.get("model_visual_prompt", "")),
             negative_prompt=str(payload.get("negative_prompt", "")),
         )
 

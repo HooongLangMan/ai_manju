@@ -71,6 +71,7 @@ def test_optional_visual_prompt_fields_round_trip(tmp_path: Path) -> None:
         "dialogue": "你好",
         "subtitle": "你好",
         "visual_prompt": "苏晚在冷宫榻上惊醒，月光照在脸上。",
+        "model_visual_prompt": "young woman waking up in a ruined palace room",
         "negative_prompt": "no modern clothing, no extra fingers"
       }
     ]
@@ -83,4 +84,5 @@ def test_optional_visual_prompt_fields_round_trip(tmp_path: Path) -> None:
 
     [round_tripped] = load_shots(shots_file)
     assert round_tripped.visual_prompt == "苏晚在冷宫榻上惊醒，月光照在脸上。"
+    assert round_tripped.model_visual_prompt == "young woman waking up in a ruined palace room"
     assert round_tripped.negative_prompt == "no modern clothing, no extra fingers"

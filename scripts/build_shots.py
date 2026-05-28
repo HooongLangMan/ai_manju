@@ -34,6 +34,7 @@ def normalize_project_shots(paths: ProjectPaths) -> int:
                 dialogue=shot.dialogue.strip(),
                 subtitle=shot.subtitle.strip(),
                 visual_prompt=shot.visual_prompt.strip(),
+                model_visual_prompt=shot.model_visual_prompt.strip(),
                 negative_prompt=shot.negative_prompt.strip(),
             )
         )

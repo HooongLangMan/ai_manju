@@ -36,19 +36,50 @@ def load_character_anchors(path: Path) -> list[CharacterAnchor]:
     return [CharacterAnchor.from_dict(item) for item in payload]
 
 
+def select_character_anchors_for_shot(
+    shot: Shot,
+    character_anchors: list[CharacterAnchor],
+) -> list[CharacterAnchor]:
+    shot_text = " ".join(
+        [
+            shot.model_visual_prompt,
+            shot.visual_prompt,
+            shot.dialogue,
+            shot.subtitle,
+        ]
+    )
+    selected = [
+        anchor
+        for anchor in character_anchors
+        if anchor.name in shot_text or anchor.role in shot_text
+    ]
+    if selected:
+        return selected
+
+    if character_anchors:
+        return [character_anchors[0]]
+    return []
+
+
+def _render_character_anchor(anchor: CharacterAnchor) -> str:
+    return (
+        f"- {anchor.name} ({anchor.role}, `{anchor.id}`): {anchor.prompt}\n"
+        f"  Identity key: {anchor.id}\n"
+        f"  Continuity: {anchor.continuity}"
+    )
+
+
 def render_shot_prompt(
     shot: Shot,
     style_guide: str,
     character_anchors: list[CharacterAnchor],
 ) -> str:
+    relevant_anchors = select_character_anchors_for_shot(shot, character_anchors)
     characters = "\n".join(
-        [
-            f"- {anchor.name} ({anchor.role}, `{anchor.id}`): {anchor.prompt}\n"
-            f"  Continuity: {anchor.continuity}"
-            for anchor in character_anchors
-        ]
+        [_render_character_anchor(anchor) for anchor in relevant_anchors]
     )
     visual_prompt = shot.visual_prompt or shot.subtitle
+    model_visual_prompt = shot.model_visual_prompt.strip() or visual_prompt.strip()
     negative_prompt = shot.negative_prompt or (
         "low quality, blurry, watermark, logo, unreadable text, modern clothing, "
         "extra fingers, distorted hands, duplicate face"
@@ -63,6 +94,8 @@ def render_shot_prompt(
         f"{characters}\n\n"
         "## Shot Composition\n\n"
         f"{visual_prompt.strip()}\n\n"
+        "## Model Visual Prompt\n\n"
+        f"{model_visual_prompt}\n\n"
         "## Dialogue Context\n\n"
         f"{shot.subtitle.strip()}\n\n"
         "## Continuity Notes\n\n"

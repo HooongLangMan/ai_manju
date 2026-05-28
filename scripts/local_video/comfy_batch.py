@@ -7,6 +7,7 @@ from scripts.local_video.comfyui import (
     ComfyUIClient,
     ComfyUITransientError,
     build_flux_schnell_prompt,
+    project_prompt_to_flux_negative_text,
     project_prompt_to_flux_text,
 )
 from scripts.local_video.project_paths import ProjectPaths
@@ -27,6 +28,10 @@ class BatchRunSummary:
     replace_source: str | None
 
 
+DEFAULT_VARIANT_SEQUENCE = ["portrait", "environment"]
+DEFAULT_VARIANT_SEED_STEP = 97
+
+
 def generate_shot_candidate(
     paths: ProjectPaths,
     shot_id: str,
@@ -36,18 +41,27 @@ def generate_shot_candidate(
     height: int,
     seed: int,
     steps: int,
+    cfg: float,
+    variant_name: str,
 ) -> Path:
     prompt_path = paths.prompts_dir / f"{shot_id}.md"
     if not prompt_path.exists():
         raise FileNotFoundError(f"Missing prompt file: {prompt_path}")
-    prompt_text = project_prompt_to_flux_text(prompt_path.read_text(encoding="utf-8"))
+    prompt_markdown = prompt_path.read_text(encoding="utf-8")
+    prompt_text = project_prompt_to_flux_text(
+        prompt_markdown,
+        variant_name=variant_name,
+    )
+    negative_text = project_prompt_to_flux_negative_text(prompt_markdown)
     workflow = build_flux_schnell_prompt(
         text=prompt_text,
+        negative_text=negative_text,
         checkpoint_name=checkpoint_name,
         width=width,
         height=height,
         seed=seed,
         steps=steps,
+        cfg=cfg,
         filename_prefix=f"ai_manga_{paths.project_name}_{shot_id}_flux_schnell",
     )
     prompt_id = client.queue_prompt(workflow)
@@ -72,7 +86,8 @@ def generate_candidates_for_shot(
     width: int = 576,
     height: int = 1024,
     seed: int = 527002,
-    steps: int = 4,
+    steps: int = 8,
+    cfg: float = 2.5,
     max_attempts_per_image: int = 20,
     generate_one: Callable | None = None,
 ) -> ShotBatchSummary:
@@ -87,9 +102,12 @@ def generate_candidates_for_shot(
     retries_used = 0
     for slot_index in range(variants):
         attempts = 0
+        variant_name = DEFAULT_VARIANT_SEQUENCE[
+            slot_index % len(DEFAULT_VARIANT_SEQUENCE)
+        ]
         while True:
             attempts += 1
-            current_seed = seed + slot_index + retries_used
+            current_seed = seed + slot_index * DEFAULT_VARIANT_SEED_STEP + retries_used
             try:
                 created.append(
                     generator(
@@ -101,6 +119,8 @@ def generate_candidates_for_shot(
                         height=height,
                         seed=current_seed,
                         steps=steps,
+                        cfg=cfg,
+                        variant_name=variant_name,
                     )
                 )
                 break
@@ -125,7 +145,8 @@ def generate_candidates_for_project(
     width: int = 576,
     height: int = 1024,
     seed: int = 527002,
-    steps: int = 4,
+    steps: int = 8,
+    cfg: float = 2.5,
     max_attempts_per_image: int = 20,
     generate_shot: Callable | None = None,
 ) -> BatchRunSummary:
@@ -143,6 +164,7 @@ def generate_candidates_for_project(
             height=height,
             seed=seed + index * 1000,
             steps=steps,
+            cfg=cfg,
             max_attempts_per_image=max_attempts_per_image,
         )
         for index, shot in enumerate(shots)

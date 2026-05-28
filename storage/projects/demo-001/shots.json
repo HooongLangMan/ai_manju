@@ -8,6 +8,7 @@
     "dialogue": "我不是应该死在手术台上吗？这里，怎么会是冷宫？",
     "subtitle": "我不是应该死在手术台上吗？这里，怎么会是冷宫？",
     "visual_prompt": "苏晚从破旧冷宫的木榻上猛然惊醒，半撑起身体，月光从残破窗棂照到她苍白震惊的脸上。画面是近景，床边有旧纱帐和落灰的青铜灯，空气里有冷雾，重点表现她刚穿越后的茫然和警觉。",
+    "model_visual_prompt": "young Chinese woman jolting awake on a worn wooden palace bed, half rising beneath torn gauze curtains, cold moonlight through a broken lattice window striking her pale shocked face, dusty bronze lamp beside the bed, faint icy mist, abandoned cold palace bedchamber, anxious and disoriented mood",
     "negative_prompt": "modern hospital, modern clothes, bright daylight, comedy expression, messy anatomy, extra fingers, readable text, watermark, logo"
   },
   {
@@ -19,6 +20,7 @@
     "dialogue": "系统提示：三日内接近摄政王，否则立即抹杀。",
     "subtitle": "系统提示：三日内接近摄政王，否则立即抹杀。",
     "visual_prompt": "苏晚站在冷宫中央，眼前悬浮一个半透明金色系统面板，金色光芒照亮她的脸和衣袖。画面为中景竖构图，系统面板不要出现可读文字，只用符文、线框和光点暗示任务倒计时，氛围紧张神秘。",
+    "model_visual_prompt": "young Chinese woman standing in the center of an abandoned cold palace hall, a translucent golden system interface floating before her, thin luminous rectangular frame, talisman-like patterns and light particles instead of readable text, gold glow lighting her face and sleeves, medium vertical composition, tense mysterious atmosphere",
     "negative_prompt": "readable UI text, cyberpunk city, modern phone, neon nightclub, overexposed gold, low quality, watermark, logo"
   },
   {
@@ -30,6 +32,7 @@
     "dialogue": "苏晚攥紧衣袖，抬眼便撞进那人冷得像雪的目光里。",
     "subtitle": "苏晚攥紧衣袖，抬眼便撞进那人冷得像雪的目光里。",
     "visual_prompt": "宫中长廊夜景，苏晚站在廊柱旁攥紧衣袖，远处摄政王萧景珩从阴影中走来，二人第一次对视。画面采用过肩或双人中景，苏晚在前景略显紧张，摄政王在月光与阴影交界处，眼神冰冷压迫。",
+    "model_visual_prompt": "night palace corridor, young Chinese woman in pale blue hanfu clutching her sleeve beside a red pillar in the foreground, the regent prince emerging from shadow in the distance, first eye contact between them, over-the-shoulder or medium two-shot framing, moonlight and darkness splitting the corridor, tense oppressive mood",
     "negative_prompt": "romantic smile, crowded background, modern architecture, wrong costume, duplicated characters, blurry faces, watermark, logo"
   },
   {
@@ -41,6 +44,7 @@
     "dialogue": "你，不是她。",
     "subtitle": "你，不是她。",
     "visual_prompt": "摄政王萧景珩的压迫感特写，他微微低头看向画面外的苏晚，冷白月光勾勒侧脸，黑色银纹长袍和玉冠清晰可见。背景是幽暗宫廊，画面留出下方字幕区域，重点表现他说出“你不是她”前的危险笃定。",
+    "model_visual_prompt": "oppressive close-up of the regent prince looking slightly downward toward someone offscreen, cold moonlight outlining his side profile, black robe with subtle silver embroidery and jade crown clearly visible, dark palace corridor background, dangerous certainty before he speaks, leave the lower frame clean for subtitles",
     "negative_prompt": "soft romantic expression, smiling, modern suit, fantasy armor, beard, old man, distorted face, unreadable subtitles inside image, watermark, logo"
   }
 ]

@@ -22,7 +22,8 @@ def generate_project_candidate(
     width: int = 576,
     height: int = 1024,
     seed: int = 527002,
-    steps: int = 4,
+    steps: int = 8,
+    cfg: float = 2.5,
 ) -> Path:
     summary = generate_candidates_for_shot(
         paths=paths,
@@ -34,6 +35,7 @@ def generate_project_candidate(
         height=height,
         seed=seed,
         steps=steps,
+        cfg=cfg,
     )
     return summary.created_paths[0]
 
@@ -54,7 +56,8 @@ def parse_args() -> ArgumentParser:
     parser.add_argument("--width", type=int, default=576)
     parser.add_argument("--height", type=int, default=1024)
     parser.add_argument("--seed", type=int, default=527002)
-    parser.add_argument("--steps", type=int, default=4)
+    parser.add_argument("--steps", type=int, default=8)
+    parser.add_argument("--cfg", type=float, default=2.5)
     parser.add_argument(
         "--repo-root",
         default=str(Path(__file__).resolve().parents[1]),
@@ -80,6 +83,7 @@ def run_generation(args: Namespace) -> BatchRunSummary | ShotBatchSummary:
             height=args.height,
             seed=args.seed,
             steps=args.steps,
+            cfg=args.cfg,
             max_attempts_per_image=args.max_attempts_per_image,
         )
     return generate_candidates_for_project(
@@ -92,6 +96,7 @@ def run_generation(args: Namespace) -> BatchRunSummary | ShotBatchSummary:
         height=args.height,
         seed=args.seed,
         steps=args.steps,
+        cfg=args.cfg,
         max_attempts_per_image=args.max_attempts_per_image,
     )
 
